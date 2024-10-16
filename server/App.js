@@ -1,12 +1,17 @@
-import express  from "express";
-import mongoose from "mongoose";
+import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-const app=express();
-app.use(bodyParser.json())
-app.use(cors())
+import connectDB from "./config/db.js"; // Ensure the correct path and extension
 
-mongoose.connect('mongodb+srv://vasavi_08:37pcW2iDgJMuI6yf@cluster0.yhpakpu.mongodb.net/ruleEngine?retryWrites=true&w=majority')
-.then(()=> app.listen(5011))
-.then(()=>console.log("Connected to Database & Listening to localhost 5011"))
-.catch((err)=>console.log(err));
+const app = express();
+app.use(bodyParser.json());
+app.use(cors());
+
+// Connect to MongoDB
+connectDB();
+
+// Start server
+const PORT = process.env.PORT || 5011; // Use PORT from .env or default to 5011
+app.listen(PORT, () => {
+    console.log(`Server is running on localhost ${PORT}`);
+});
