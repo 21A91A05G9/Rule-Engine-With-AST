@@ -1,4 +1,3 @@
-// src/components/CreateRule.js
 import React, { useState } from 'react';
 import { Alert } from 'react-bootstrap';
 

@@ -1,4 +1,3 @@
-// src/components/CombineRule.js
 import React, { useState } from 'react';
 import { Alert } from 'react-bootstrap';
 
