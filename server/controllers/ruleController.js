@@ -18,13 +18,13 @@ function tokenize(ruleString) {
 // Parse tokens and build the AST recursively
 function parseTokens(tokens) {
     let index = 0;
-    
+
     function parseExpression() {
         let left = parseTerm();
 
         while (index < tokens.length) {
             const operator = tokens[index].toUpperCase();
-            
+
             // Handling logical operators (AND, OR)
             if (operator === "AND" || operator === "OR") {
                 index++;
@@ -34,7 +34,7 @@ function parseTokens(tokens) {
                 break;
             }
         }
-        
+
         return left;
     }
 
@@ -50,7 +50,7 @@ function parseTokens(tokens) {
         const field = tokens[index++];  // Operand, e.g., "age"
         const operator = tokens[index++];  // Operator, e.g., ">"
         const value = tokens[index++];  // Operand value, e.g., "30" or "'Sales'"
-        
+
         return new Node("operand", null, null, { field, operator, value });
     }
 
@@ -83,40 +83,64 @@ export const createRule = async (req, res) => {
     }
 };
 
-// Combine rules into a single AST
-// Combine rules into a single AST
 export const combineRules = async (req, res) => {
-    const { ruleIds } = req.body;
+    const { rule_name, rules } = req.body;
+
+    // Input validation
+    if (!rule_name || !rules || !Array.isArray(rules) || rules.length === 0) {
+        return res.status(400).json({ error: 'Invalid input' });
+    }
 
     try {
-        // Validate ObjectIds
-        const validIds = ruleIds.filter(id => mongoose.isValidObjectId(id));
-
-        // Fetch the rules by their ObjectIds
-        const rules = await Rule.find({ _id: { $in: validIds } });
-
-        if (rules.length === 0) {
-            return res.status(400).json({ error: "No rules found for the given IDs." });
+        // Check for unique rule name
+        const existingRule = await Rule.findOne({ ruleName: rule_name });
+        if (existingRule) {
+            return res.status(400).json({ error: 'Rule name must be unique.' });
         }
 
-        // Extract ruleASTs from the fetched rules
-        const ruleAsts = rules.map(rule => rule.ruleAST);
+        // Create the combined AST
+        const combinedAST = {
+            type: "CombinedRule",
+            name: rule_name,
+            rules: rules.map((rule, index) => {
+                const ruleExpression = {
+                    type: "Expression",
+                    operator: "AND", // Assuming all combined rules use AND
+                    left: {
+                        type: "Condition",
+                        field: rule.field1, // Adjust these based on your rule structure
+                        operator: rule.operator1,
+                        value: rule.value1
+                    },
+                    right: {
+                        type: "Condition",
+                        field: rule.field2,
+                        operator: rule.operator2,
+                        value: rule.value2
+                    }
+                };
 
-        // Combine the ASTs
-        const combinedAst = combineASTs(ruleAsts);
+                return {
+                    type: "Rule",
+                    name: `rule ${index + 1}`,
+                    expression: ruleExpression
+                };
+            }),
+            operator: "AND" // Assuming the top-level operator is AND
+        };
 
-        // Create a new combined rule
-        const combinedRule = new Rule({
-            ruleName: "Combined Rule",
-            ruleAST: combinedAst,
-            ruleString: "Combined Rule String", // Optional: You can format this as needed
+        // Save the combined rule in the database
+        const newRule = new Rule({
+            ruleName: rule_name,
+            ruleString: rules.join(' AND '), // Combine the rules into a single string
+            ruleAST: combinedAST // Store the combined AST
         });
 
-        await combinedRule.save(); // Save the combined rule to the database
-
-        res.status(201).json({ combinedAst }); // Respond with the combined AST
+        await newRule.save();
+        return res.status(201).json({ message: "Rules combined and saved successfully!", ast: combinedAST });
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        console.error("Error saving combined rules: ", err);
+        res.status(500).json({ error: err.message });
     }
 };
 
@@ -133,17 +157,6 @@ export const evaluateRule = (req, res) => {
         res.status(400).json({ error: err.message });
     }
 };
-
-// Combine ASTs logic
-function combineASTs(ruleAsts) {
-    const combinedRoot = new Node("operator", null, null, "AND");
-
-    ruleAsts.forEach(ast => {
-        combinedRoot.addChild(ast); // Assuming the Node class has an addChild method
-    });
-
-    return combinedRoot;
-}
 
 // Evaluate AST logic
 function evaluateAST(ast, data) {
