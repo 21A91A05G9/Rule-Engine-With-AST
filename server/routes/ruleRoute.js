@@ -8,3 +8,4 @@ router.post('/combine', combineRules);
 router.post('/evaluate', evaluateRule);
 
 export default router;
+
