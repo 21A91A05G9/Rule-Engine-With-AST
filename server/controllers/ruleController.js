@@ -158,13 +158,25 @@ export const evaluateRule = (req, res) => {
     }
 };
 
+
 // Evaluate AST logic
+// Evaluate AST logic with proper handling for combined rules and nested expressions
+// Evaluate AST logic with added debug logging
 function evaluateAST(ast, data) {
-    // Traverse the AST and evaluate based on user data
-    if (ast.type === "operator") {
+    console.log('Evaluating AST:', JSON.stringify(ast, null, 2)); // Log the AST
+    console.log('Data:', data); // Log the input data
+
+    if (ast.type === "CombinedRule") {
+        console.log('Evaluating CombinedRule');
+        return ast.rules.some(rule => evaluateAST(rule.expression, data));
+    } else if (ast.type === "Rule") {
+        console.log('Evaluating Rule:', JSON.stringify(ast.expression));
+        return evaluateAST(ast.expression, data);
+    } else if (ast.type === "Expression") {
         const leftValue = evaluateAST(ast.left, data);
         const rightValue = evaluateAST(ast.right, data);
-        switch (ast.value) {
+        console.log(`Evaluating Expression: ${ast.operator}, Left: ${leftValue}, Right: ${rightValue}`);
+        switch (ast.operator) {
             case "AND":
                 return leftValue && rightValue;
             case "OR":
@@ -172,8 +184,9 @@ function evaluateAST(ast, data) {
             default:
                 return false;
         }
-    } else if (ast.type === "operand") {
-        const { field, operator, value } = ast.value;
+    } else if (ast.type === "Condition") {
+        const { field, operator, value } = ast;
+        console.log(`Evaluating Condition: ${field} ${operator} ${value}, Data Value: ${data[field]}`);
         switch (operator) {
             case ">":
                 return data[field] > value;
@@ -181,10 +194,19 @@ function evaluateAST(ast, data) {
                 return data[field] < value;
             case "=":
                 return data[field] === value;
-            // Add more operators as needed
             default:
                 return false;
         }
     }
     return false;
+}
+
+export const fetchData = async(req, res) => { 
+    try {
+        const rules = await Rule.find(); // Fetch all rules from the database
+        res.json({ rules });
+    } catch (error) {
+        console.error('Error fetching rules:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 }
