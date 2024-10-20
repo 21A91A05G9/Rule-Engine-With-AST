@@ -66,7 +66,7 @@ rule-engine/ ├── backend/ # Backend code │ ├── controllers/ # API 
 - **Combining Rules: Select multiple rules from the frontend to combine them, and the resulting AST will be displayed.
 - **Evaluating Rules: Provide user data to evaluate against the created or combined rules, and the application will display whether the user meets the eligibility criteria.
 
-##API Endpoints
+## API Endpoints
 1. Create Rule
 - **Endpoint: POST /api/rules
 - **Description: Create a new rule and store it in the database.
@@ -83,40 +83,42 @@ rule-engine/ ├── backend/ # Backend code │ ├── controllers/ # API 
    }
 
 2. Combine Rules
-Endpoint: POST /api/rules/combine
-Description: Combine multiple rules into a single AST.
-Request Body:
-json
-Copy code
-{
-  "rules": ["rule1_string", "rule2_string"]
-}
-Response:
-json
-Copy code
-{
-  "combinedAst": "<combined_AST_representation>"
-}
-3. Evaluate Rule
-Endpoint: POST /api/rules/evaluate
-Description: Evaluate a rule against provided user attributes.
-Request Body:
-json
-Copy code
-{
-  "ast": "<AST>",
-  "data": {
-    "age": 30,
-    "department": "Sales",
-    "salary": 60000,
-    "experience": 3
+- **Endpoint: POST /api/rules/combine
+- **Description: Combine multiple rules into a single AST.
+- **Request Body:
+  ```bash
+  {
+   "rules": ["rule1_string", "rule2_string"]
   }
-}
-Response:
-json
-Copy code
-{
-  "result": true
-}
+- **Response
+   ```bash
+   {
+     "combinedAst": "<combined_AST_representation>"
+   }
 
+3. Evaluate Rule
+- **Endpoint: POST /api/rules/evaluate
+- **Description: Evaluate a rule against provided user attributes.
+- **Request Body:
+    ```bash
+   {
+     "ast": "<AST>",
+     "data": {
+       "age": 30,
+       "department": "Sales",
+       "salary": 60000,
+       "experience": 3
+     }
+   }
+- **Response:
+    ```bash
+   {
+     "result": true
+   }
+
+## Bonus Features
+- **Error Handling: Implement error responses for invalid rule strings and incorrect data formats (e.g., missing operators, invalid comparisons).
+- **Attribute Validation: Ensure provided attributes match a predefined catalog.
+- **Rule Modification: Allow users to modify existing rules, changing operators, operand values, or adding/removing sub-expressions within the AST.
+- **User-Defined Functions: Extend the system to support user-defined functions for advanced conditions in future versions.
 
