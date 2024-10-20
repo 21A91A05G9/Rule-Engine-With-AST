@@ -4,23 +4,23 @@
 The Rule Engine with Abstract Syntax Tree (AST) is a 3-tier application designed to determine user eligibility based on various attributes such as age, department, income, and spending. By representing conditional rules as ASTs, the system allows for dynamic creation, combination, and modification of rules, providing flexibility in eligibility assessments.
 
 ## Features
-- Dynamic Rule Creation**: Users can create eligibility rules using a user-friendly interface.
-- Rule Combination**: Multiple rules can be combined into a single logical structure, allowing for complex eligibility checks.
-- Rule Evaluation**: The engine evaluates rules against user data to determine eligibility.
-- Error Handling**: The application includes robust error handling for invalid rule strings and data formats.
-- Modifiable Rules**: Users can modify existing rules, enhancing adaptability.
-- User-Defined Functions**: Future extensions may support advanced conditions through user-defined functions.
+- Dynamic Rule Creation: Users can create eligibility rules using a user-friendly interface.
+- Rule Combination: Multiple rules can be combined into a single logical structure, allowing for complex eligibility checks.
+- Rule Evaluation: The engine evaluates rules against user data to determine eligibility.
+- Error Handling: The application includes robust error handling for invalid rule strings and data formats.
+- Modifiable Rules: Users can modify existing rules, enhancing adaptability.
+- User-Defined Functions: Future extensions may support advanced conditions through user-defined functions.
 
 ## Tech Stack
-- Frontend**: React.js
-- Backend**: Node.js, Express.js
-- Database**: MongoDB
-- Testing**: Jest or Mocha/Chai
+- Frontend: React.js
+- Backend: Node.js, Express.js
+- Database: MongoDB
+- Testing: Jest or Mocha/Chai
 
 ## **Project Structure**
     ```bash
       Rule-Engine-With-AST/
-      ├── server/                  # Backend code
+      ├── server/                   # Backend code
       │   ├── config/               # Configuration
       │   ├── controllers/          # API controllers
       │   ├── models/               # Database models
@@ -28,8 +28,8 @@ The Rule Engine with Abstract Syntax Tree (AST) is a 3-tier application designed
       │   ├── services/             # Business logic
       │   ├── .env                  # Environment variables
       │   ├── package.json          # Backend dependencies
-      │   └── App.js             # Backend entry point
-      ├── client/                 # Frontend code
+      │   └── App.js                # Backend entry point
+      ├── client/                   # Frontend code
       │   ├── public/               # Public assets
       │   ├── src/                  # React components and logic
       │   ├── package.json          # Frontend dependencies
@@ -80,9 +80,9 @@ The Rule Engine with Abstract Syntax Tree (AST) is a 3-tier application designed
 
 
 ## How to Use
-- **Creating Rules: Access the frontend application and use the provided form to input rule strings. After submission, the application will generate and store the corresponding AST.
-- **Combining Rules: Select multiple rules from the frontend to combine them, and the resulting AST will be displayed.
-- **Evaluating Rules: Provide user data to evaluate against the created or combined rules, and the application will display whether the user meets the eligibility criteria.
+- Creating Rules: Access the frontend application and use the provided form to input rule strings. After submission, the application will generate and store the corresponding AST.
+- Combining Rules: Select multiple rules from the frontend to combine them, and the resulting AST will be displayed.
+- Evaluating Rules: Provide user data to evaluate against the created or combined rules, and the application will display whether the user meets the eligibility criteria.
 
 ## API Endpoints
 1. Create Rule
