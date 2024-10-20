@@ -29,15 +29,36 @@ rule-engine/ ├── backend/ # Backend code │ ├── controllers/ # API 
    git clone <repository-url>
    cd rule-engine
 
-### Frontend Setup
-2. **Clone the Repository**
+2. **Navigate to the Frontend Directory**
    ```bash
+   npm install
 
-## How to Start
-
-### Frontend Setup
-1. **Clone the Repository**
+3. **Install Dependencie**
    ```bash
+   cd client
+
+3. **Start the Frontend Application**
+   ```bash
+   npm start
+
+### Backend Setup
+1. **Navigate to the Backend Directory**
+   ```bash
+   cd ../backend
+
+2. **Install Dependencies**
+   ```bash
+   npm install
+
+4. **Set Up Environment Variables Create a .env file in the backend directory with the following content:**
+    ```bash
+    MONGODB_URI=mongodb://localhost:27017/rule_engine
+   PORT=5000
+
+
+5. **Start the Backend Application**
+   ```bash
+   npm start
 
 ## How to Start
 
@@ -46,4 +67,13 @@ rule-engine/ ├── backend/ # Backend code │ ├── controllers/ # API 
    ```bash
 
 
+## How to Use
+Creating Rules: Access the frontend application and use the provided form to input rule strings. After submission, the application will generate and store the corresponding AST.
+Combining Rules: Select multiple rules from the frontend to combine them, and the resulting AST will be displayed.
+Evaluating Rules: Provide user data to evaluate against the created or combined rules, and the application will display whether the user meets the eligibility criteria.
 
+API Endpoints
+1. Create Rule
+Endpoint: POST /api/rules
+Description: Create a new rule and store it in the database.
+Request Body
