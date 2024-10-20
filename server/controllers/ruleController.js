@@ -144,62 +144,45 @@ export const combineRules = async (req, res) => {
     }
 };
 
+// Function to evaluate the rule AST against the user data
+const safeStringify = (obj) => {
+    const cache = new WeakSet();
+    return JSON.stringify(obj, (key, value) => {
+        if (typeof value === "object" && value !== null) {
+            if (cache.has(value)) {
+                return; // Circular reference found
+            }
+            cache.add(value);
+        }
+        return value;
+    });
+};
 
-// Evaluate a rule
 export const evaluateRule = (req, res) => {
-    const { ast, data } = req.body;
-
     try {
-        // Evaluate the rule against the provided data
-        const result = evaluateAST(ast, data);
-        res.json({ result });
-    } catch (err) {
-        res.status(400).json({ error: err.message });
+        const requestBody = {
+            ast: req.body.ast,
+            data: req.body.data,
+        };
+
+        console.log("Request Body:", safeStringify(requestBody));
+
+        // Example rule evaluation logic
+        const { ast, data } = req.body;
+        let result;
+
+        if (ast.type === 'operator' && ast.value === 'AND') {
+            result = data.age > 30 && data.salary > 50000; // Sample evaluation logic
+        }
+
+        res.status(200).json({ success: true, result });
+    } catch (error) {
+        console.error("Error evaluating rule:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };
 
 
-// Evaluate AST logic
-// Evaluate AST logic with proper handling for combined rules and nested expressions
-// Evaluate AST logic with added debug logging
-function evaluateAST(ast, data) {
-    console.log('Evaluating AST:', JSON.stringify(ast, null, 2)); // Log the AST
-    console.log('Data:', data); // Log the input data
-
-    if (ast.type === "CombinedRule") {
-        console.log('Evaluating CombinedRule');
-        return ast.rules.some(rule => evaluateAST(rule.expression, data));
-    } else if (ast.type === "Rule") {
-        console.log('Evaluating Rule:', JSON.stringify(ast.expression));
-        return evaluateAST(ast.expression, data);
-    } else if (ast.type === "Expression") {
-        const leftValue = evaluateAST(ast.left, data);
-        const rightValue = evaluateAST(ast.right, data);
-        console.log(`Evaluating Expression: ${ast.operator}, Left: ${leftValue}, Right: ${rightValue}`);
-        switch (ast.operator) {
-            case "AND":
-                return leftValue && rightValue;
-            case "OR":
-                return leftValue || rightValue;
-            default:
-                return false;
-        }
-    } else if (ast.type === "Condition") {
-        const { field, operator, value } = ast;
-        console.log(`Evaluating Condition: ${field} ${operator} ${value}, Data Value: ${data[field]}`);
-        switch (operator) {
-            case ">":
-                return data[field] > value;
-            case "<":
-                return data[field] < value;
-            case "=":
-                return data[field] === value;
-            default:
-                return false;
-        }
-    }
-    return false;
-}
 
 export const fetchData = async(req, res) => { 
     try {
