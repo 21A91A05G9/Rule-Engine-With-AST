@@ -18,7 +18,6 @@ The Rule Engine with Abstract Syntax Tree (AST) is a 3-tier application designed
 - Testing: Jest or Mocha/Chai
 
 ## Project Structure
-   ```bash
       Rule-Engine-With-AST/
       ├── server/                   # Backend code
       │   ├── config/               # Configuration
