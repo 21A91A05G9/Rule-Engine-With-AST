@@ -29,11 +29,21 @@ rule-engine/ ├── backend/ # Backend code │ ├── controllers/ # API 
    git clone <repository-url>
    cd rule-engine
 
-cd frontend
+### Frontend Setup
+2. **Clone the Repository**
+   ```bash
 
-npm install
+## How to Start
 
-REACT_APP_API_URL=http://localhost:5000/api
+### Frontend Setup
+1. **Clone the Repository**
+   ```bash
 
-npm start
+## How to Start
+
+### Navigate to the Frontend Directory
+1. **Clone the Repository**
+   ```bash
+
+
 
