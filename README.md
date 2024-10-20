@@ -60,20 +60,63 @@ rule-engine/ ├── backend/ # Backend code │ ├── controllers/ # API 
    ```bash
    npm start
 
-## How to Start
-
-### Navigate to the Frontend Directory
-1. **Clone the Repository**
-   ```bash
-
 
 ## How to Use
-Creating Rules: Access the frontend application and use the provided form to input rule strings. After submission, the application will generate and store the corresponding AST.
-Combining Rules: Select multiple rules from the frontend to combine them, and the resulting AST will be displayed.
-Evaluating Rules: Provide user data to evaluate against the created or combined rules, and the application will display whether the user meets the eligibility criteria.
+- **Creating Rules: Access the frontend application and use the provided form to input rule strings. After submission, the application will generate and store the corresponding AST.
+- **Combining Rules: Select multiple rules from the frontend to combine them, and the resulting AST will be displayed.
+- **Evaluating Rules: Provide user data to evaluate against the created or combined rules, and the application will display whether the user meets the eligibility criteria.
 
-API Endpoints
+##API Endpoints
 1. Create Rule
-Endpoint: POST /api/rules
-Description: Create a new rule and store it in the database.
-Request Body
+- **Endpoint: POST /api/rules
+- **Description: Create a new rule and store it in the database.
+- **Request Body
+  ```bash
+  {
+  "ruleString": "your_rule_string"
+  }
+- **Response
+  ```bash
+  {
+  "message": "Rule created successfully",
+  "ast": "<AST_representation>"
+   }
+
+2. Combine Rules
+Endpoint: POST /api/rules/combine
+Description: Combine multiple rules into a single AST.
+Request Body:
+json
+Copy code
+{
+  "rules": ["rule1_string", "rule2_string"]
+}
+Response:
+json
+Copy code
+{
+  "combinedAst": "<combined_AST_representation>"
+}
+3. Evaluate Rule
+Endpoint: POST /api/rules/evaluate
+Description: Evaluate a rule against provided user attributes.
+Request Body:
+json
+Copy code
+{
+  "ast": "<AST>",
+  "data": {
+    "age": 30,
+    "department": "Sales",
+    "salary": 60000,
+    "experience": 3
+  }
+}
+Response:
+json
+Copy code
+{
+  "result": true
+}
+
+
