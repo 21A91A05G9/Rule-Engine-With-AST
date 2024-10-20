@@ -1,4 +1,4 @@
-Rule Engine with AST
+# Rule Engine with AST
 
 ## Project Overview
 The Rule Engine with Abstract Syntax Tree (AST) is a 3-tier application designed to determine user eligibility based on various attributes such as age, department, income, and spending. By representing conditional rules as ASTs, the system allows for dynamic creation, combination, and modification of rules, providing flexibility in eligibility assessments.
