@@ -17,24 +17,26 @@ The Rule Engine with Abstract Syntax Tree (AST) is a 3-tier application designed
 - Database**: MongoDB
 - Testing**: Jest or Mocha/Chai
 
-## Project Structure
-   ```bash
-   project-name/
-   ├── backend/                  # Backend code
-   │   ├── controllers/          # API controllers
-   │   ├── models/               # Database models
-   │   ├── routes/               # API routes
-   │   ├── services/             # Business logic
-   │   ├── utils/                # Utility functions
-   │   ├── .env                  # Environment variables
-   │   ├── package.json          # Backend dependencies
-   │   └── server.js             # Backend entry point
-   ├── frontend/                 # Frontend code
-   │   ├── public/               # Public assets
-   │   ├── src/                  # React components and logic
-   │   ├── package.json          # Frontend dependencies
-   │   └── .env                  # Frontend environment variables
-   └── README.md                 # Project documentation
+## **Project Structure**
+    ```bash
+      Rule-Engine-With-AST/
+      ├── server/                  # Backend code
+      │   ├── config/               # Configuration
+      │   ├── controllers/          # API controllers
+      │   ├── models/               # Database models
+      │   ├── routes/               # API routes
+      │   ├── services/             # Business logic
+      │   ├── .env                  # Environment variables
+      │   ├── package.json          # Backend dependencies
+      │   └── App.js             # Backend entry point
+      ├── client/                 # Frontend code
+      │   ├── public/               # Public assets
+      │   ├── src/                  # React components and logic
+      │   ├── package.json          # Frontend dependencies
+      │   └── .env                  # Frontend environment variables
+      └── README.md                 # Project documentation
+   
+   
 
 
 ## How to Start
@@ -43,7 +45,7 @@ The Rule Engine with Abstract Syntax Tree (AST) is a 3-tier application designed
 1. **Clone the Repository**
    ```bash
    git clone <repository-url>
-   cd rule-engine
+   cd Rule-Engine-With-AST
 
 2. **Navigate to the Frontend Directory**
    ```bash
