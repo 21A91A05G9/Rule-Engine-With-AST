@@ -1,38 +1,39 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Alert, Button, Spinner } from 'react-bootstrap';
+import '../styles/ruleForm.css';  
+import CustomNavbar from "./Navbar"; 
 
 const CombineRulePage = () => {
     const [ruleName, setRuleName] = useState('');
-    const [rules, setRules] = useState([{ rule: '' }]); // Only store rule strings
+    const [rules, setRules] = useState([{ rule: '' }]);
     const [addedRules, setAddedRules] = useState([]);
     const [combinedAst, setCombinedAst] = useState(null);
     const [showAlert, setShowAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [isLoading, setIsLoading] = useState(false); // Loading state
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleRuleChange = (index, value) => {
         const updatedRules = [...rules];
-        updatedRules[index].rule = value; // Only update the rule
+        updatedRules[index].rule = value;
         setRules(updatedRules);
     };
 
     const handleCreateRule = (index) => {
         const newRule = rules[index];
         if (newRule.rule) {
-            setAddedRules([...addedRules, newRule]); // Add new rule to the list
-            setRules(rules.map((rule, i) => (i === index ? { rule: '' } : rule))); // Reset the input
+            setAddedRules([...addedRules, newRule]);
+            setRules(rules.map((rule, i) => (i === index ? { rule: '' } : rule)));
         }
     };
 
     const handleCombineRules = async () => {
-        setIsLoading(true); // Start loading
+        setIsLoading(true);
         try {
             const response = await axios.post('http://localhost:5000/api/rules/combine', {
-                rule_name: ruleName, // Send the single rule name
-                rules: addedRules.map(rule => rule.rule) // Send the array of added rules
+                rule_name: ruleName,
+                rules: addedRules.map(rule => rule.rule),
             });
-            // Set combined AST from response
             setCombinedAst(response.data.ast);
             setShowAlert(true);
             setErrorMessage('');
@@ -41,17 +42,19 @@ const CombineRulePage = () => {
             setErrorMessage(err.response.data.error || 'Failed to combine rules.');
             setShowAlert(false);
         } finally {
-            setIsLoading(false); // Stop loading
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="container mt-5">
+        <>
+        
+        <CustomNavbar />
+        <div className="combine-rule-container mt-5">
             <h2 className="text-center">Combine Rules</h2>
 
             {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
 
-            {/* Single Rule Name Input */}
             <div className="form-group mb-4">
                 <label>Combined Rule Name</label>
                 <input
@@ -112,6 +115,7 @@ const CombineRulePage = () => {
                 ))}
             </div>
         </div>
+        </>
     );
 };
 

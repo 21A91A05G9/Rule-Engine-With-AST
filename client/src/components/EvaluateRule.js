@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Alert, Button, Spinner } from 'react-bootstrap';
 import axios from 'axios';
+import '../styles/ruleForm.css';  
+import CustomNavbar from "./Navbar"; 
 
 const EvaluateRule = () => {
     const [jsonInput, setJsonInput] = useState('');
@@ -46,15 +48,15 @@ const EvaluateRule = () => {
             console.warn('Invalid JSON or no rule selected');
             return;
         }
-    
+
         setLoading(true);
         setEvaluationResult(null); // Reset previous result
-    
+
         try {
             let ast, data;
             try {
-                ast = JSON.parse(selectedRuleAST); // Ensure this is the correct structure
-                data = JSON.parse(jsonInput); // Ensure user-provided data is valid
+                ast = JSON.parse(selectedRuleAST);
+                data = JSON.parse(jsonInput);
                 console.log('AST:', ast);
                 console.log('Input Data:', data);
             } catch (jsonError) {
@@ -63,7 +65,7 @@ const EvaluateRule = () => {
                 setLoading(false);
                 return;
             }
-    
+
             const response = await axios.post('http://localhost:5000/api/rules/evaluate', { ast, data });
             setEvaluationResult(response.data.result);
         } catch (error) {
@@ -81,7 +83,7 @@ const EvaluateRule = () => {
             setLoading(false);
         }
     };
-    
+
     const clearInputs = () => {
         setJsonInput('');
         setIsJsonValid(true);
@@ -94,8 +96,8 @@ const EvaluateRule = () => {
         const ruleIndex = e.target.value;
         if (ruleIndex !== '') {
             const selectedRule = rules[ruleIndex];
-            setSelectedRuleAST(JSON.stringify(selectedRule.ruleAST)); // Set AST for evaluation
-            setSelectedRuleString(selectedRule.ruleString); // Set ruleString to display
+            setSelectedRuleAST(JSON.stringify(selectedRule.ruleAST));
+            setSelectedRuleString(selectedRule.ruleString);
         } else {
             setSelectedRuleAST('');
             setSelectedRuleString('');
@@ -103,7 +105,9 @@ const EvaluateRule = () => {
     };
 
     return (
-        <div className="container mt-5">
+        <>
+        <CustomNavbar/>
+        <div className="evaluate-rule-container mt-5">
             <h2 className="text-center">Evaluate Rule</h2>
             <div className="form-group">
                 <label>Input JSON</label>
@@ -150,6 +154,7 @@ const EvaluateRule = () => {
 
             {fetchError && <Alert variant="danger" className="mt-2">{fetchError}</Alert>}
         </div>
+        </>
     );
 };
 
