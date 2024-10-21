@@ -15,7 +15,6 @@ The Rule Engine with Abstract Syntax Tree (AST) is a 3-tier application designed
 - Frontend: React.js
 - Backend: Node.js, Express.js
 - Database: MongoDB
-- Testing: Jest or Mocha/Chai
 
 ## Project Structure
       Rule-Engine-With-AST/
@@ -43,7 +42,7 @@ The Rule Engine with Abstract Syntax Tree (AST) is a 3-tier application designed
 ### Frontend Setup
 1. **Clone the Repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/21A91A05G9/Rule-Engine-With-AST.git
    cd Rule-Engine-With-AST
 
 2. **Navigate to the Frontend Directory**
@@ -85,7 +84,7 @@ The Rule Engine with Abstract Syntax Tree (AST) is a 3-tier application designed
 
 ## API Endpoints
 1. Create Rule
-- Endpoint: POST /api/rules
+- Endpoint: POST /api/rules/create
 - Description: Create a new rule and store it in the database.
 - Request Body
   ```bash
