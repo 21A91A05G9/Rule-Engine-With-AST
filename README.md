@@ -82,6 +82,9 @@ The Rule Engine with Abstract Syntax Tree (AST) is a 3-tier application designed
 - Combining Rules: Select multiple rules from the frontend to combine them, and the resulting AST will be displayed.
 - Evaluating Rules: Provide user data to evaluate against the created or combined rules, and the application will display whether the user meets the eligibility criteria.
 
+![image](https://github.com/user-attachments/assets/541a4e2f-6ce1-4fda-80f8-944b9e9bd31f)
+
+
 ## API Endpoints
 1. Create Rule
 - Endpoint: POST /api/rules/create
@@ -98,6 +101,9 @@ The Rule Engine with Abstract Syntax Tree (AST) is a 3-tier application designed
   "ast": "<AST_representation>"
    }
 
+![image](https://github.com/user-attachments/assets/895cf020-3593-4a08-aa41-9f3e03dc3ae5)
+
+
 2. Combine Rules
 - Endpoint: POST /api/rules/combine
 - Description: Combine multiple rules into a single AST.
@@ -111,6 +117,9 @@ The Rule Engine with Abstract Syntax Tree (AST) is a 3-tier application designed
    {
      "combinedAst": "<combined_AST_representation>"
    }
+   
+![image](https://github.com/user-attachments/assets/049f0ca4-8f30-4d70-bc63-fe7d304951e7)
+
 
 3. Evaluate Rule
 - Endpoint: POST /api/rules/evaluate
