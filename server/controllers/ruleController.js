@@ -144,41 +144,97 @@ export const combineRules = async (req, res) => {
     }
 };
 
-// Function to evaluate the rule AST against the user data
-const safeStringify = (obj) => {
-    const cache = new WeakSet();
-    return JSON.stringify(obj, (key, value) => {
-        if (typeof value === "object" && value !== null) {
-            if (cache.has(value)) {
-                return; // Circular reference found
-            }
-            cache.add(value);
-        }
-        return value;
-    });
+const evaluateCondition = (condition, data) => {
+    const { field, operator, value } = condition.value;
+
+    // Remove single quotes from the value for string comparison
+    const parsedValue = value.replace(/'/g, "");
+
+    let result;
+    switch (operator) {
+        case '>':
+            result = data[field] > parseInt(parsedValue, 10);
+            break;
+        case '<':
+            result = data[field] < parseInt(parsedValue, 10);
+            break;
+        case '=':
+            result = data[field] === parsedValue;
+            break;
+        default:
+            console.warn(`Unknown operator: ${operator}`);
+            result = false;
+    }
+
+    console.log(`Evaluating: ${field} ${operator} ${parsedValue} => ${result}`);
+    return result;
 };
 
-export const evaluateRule = (req, res) => {
-    try {
-        const requestBody = {
-            ast: req.body.ast,
-            data: req.body.data,
-        };
+// Function to evaluate the AST recursively
+export const evaluateRule = async (req, res) => {
+    const { ast, data } = req.body; // Access node and data from request body
+    console.log('Evaluating node:', ast);
 
-        console.log("Request Body:", safeStringify(requestBody));
+    // Check if node is defined
+    if (!ast) {
+        console.warn('Node is undefined or null');
+        return res.status(400).json({ success: false, message: 'Node is undefined or null' });
+    }
 
-        // Example rule evaluation logic
-        const { ast, data } = req.body;
-        let result;
+    let evaluationResult;
 
-        if (ast.type === 'operator' && ast.value === 'AND') {
-            result = data.age > 30 && data.salary > 50000; // Sample evaluation logic
+    // Evaluate based on node type
+    if (ast.type === "operand") {
+        evaluationResult = evaluateCondition(ast, data);
+    } else if (ast.type === "operator") {
+        const leftResult = await evaluateRule({ body: { ast: ast.left, data } }, res);
+        if (leftResult === undefined) return; // Prevent further execution if leftResult is undefined
+
+        const rightResult = await evaluateRule({ body: { ast: ast.right, data } }, res);
+        if (rightResult === undefined) return; // Prevent further execution if rightResult is undefined
+
+        switch (ast.value) {
+            case "AND":
+                evaluationResult = leftResult && rightResult;
+                break;
+            case "OR":
+                evaluationResult = leftResult || rightResult;
+                break;
+            default:
+                console.warn(`Unknown operator: ${ast.value}`);
+                return res.status(400).json({ success: false, message: 'Unknown operator' });
         }
 
-        res.status(200).json({ success: true, result });
-    } catch (error) {
-        console.error("Error evaluating rule:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        console.log(`Evaluating operator '${ast.value}': ${leftResult} ${ast.value} ${rightResult} => ${evaluationResult}`);
+    } else if (ast.type === "CombinedRule") {
+        const results = await Promise.all(ast.rules.map(async (rule) => {
+            const result = await evaluateRule({ body: { ast: rule.expression, data } }, res);
+            return result === undefined ? undefined : result; // Prevent undefined results
+        }));
+
+        if (results.includes(undefined)) {
+            return; // Early return if any rule couldn't be evaluated
+        }
+
+        // Apply the operator to the results
+        if (ast.operator === "AND") {
+            evaluationResult = results.every(result => result === true);
+        } else if (ast.operator === "OR") {
+            evaluationResult = results.some(result => result === true);
+        } else {
+            console.warn(`Unknown operator for CombinedRule: ${ast.operator}`);
+            return res.status(400).json({ success: false, message: 'Unknown operator for CombinedRule' });
+        }
+
+        console.log(`Evaluating CombinedRule '${ast.name}' with operator '${ast.operator}': ${results} => ${evaluationResult}`);
+    } else {
+        console.warn(`Unknown node type: ${ast.type}`);
+        return res.status(400).json({ success: false, message: 'Unknown node type' });
+    }
+
+    // Send the evaluation result as a JSON response
+    if (!res.headersSent) {
+        return res.status(200).json({ success: true, result: evaluationResult });
     }
 };
 

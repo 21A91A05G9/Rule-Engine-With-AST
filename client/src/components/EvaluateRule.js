@@ -10,6 +10,7 @@ const EvaluateRule = () => {
     const [rules, setRules] = useState([]);
     const [selectedRuleAST, setSelectedRuleAST] = useState('');
     const [selectedRuleString, setSelectedRuleString] = useState('');
+    const [selectedRuleName, setSelectedRuleName] = useState(''); // New state for rule name
     const [evaluationResult, setEvaluationResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [fetchError, setFetchError] = useState(null);
@@ -66,7 +67,12 @@ const EvaluateRule = () => {
                 return;
             }
 
-            const response = await axios.post('http://localhost:5000/api/rules/evaluate', { ast, data });
+            // Include selected rule name in the payload
+            const response = await axios.post('http://localhost:5000/api/rules/evaluate', {
+                ast,
+                data,
+                ruleName: selectedRuleName // Pass rule name here
+            });
             setEvaluationResult(response.data.result);
         } catch (error) {
             if (error.response) {
@@ -89,6 +95,7 @@ const EvaluateRule = () => {
         setIsJsonValid(true);
         setSelectedRuleAST('');
         setSelectedRuleString('');
+        setSelectedRuleName(''); // Reset rule name
         setEvaluationResult(null);
     };
 
@@ -98,9 +105,11 @@ const EvaluateRule = () => {
             const selectedRule = rules[ruleIndex];
             setSelectedRuleAST(JSON.stringify(selectedRule.ruleAST));
             setSelectedRuleString(selectedRule.ruleString);
+            setSelectedRuleName(selectedRule.ruleName); // Set the selected rule name
         } else {
             setSelectedRuleAST('');
             setSelectedRuleString('');
+            setSelectedRuleName(''); // Reset rule name
         }
     };
 
