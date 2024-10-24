@@ -132,6 +132,9 @@ The Rule Engine with Abstract Syntax Tree (AST) is a 3-tier application designed
      "result": true
    }
 
+![image](https://github.com/user-attachments/assets/bba14e62-d0a1-4d28-8c49-7e35b4190512)
+
+
 ## Bonus Features
 - Error Handling: Implement error responses for invalid rule strings and incorrect data formats (e.g., missing operators, invalid comparisons).
 - Attribute Validation: Ensure provided attributes match a predefined catalog.
